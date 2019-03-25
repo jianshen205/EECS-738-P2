@@ -8,9 +8,9 @@ import random
 import string
 
 firstWords = {}
-pairs = {}
-triples = {}
-transitions = {}
+firstOrder = {}
+secondOrder = {}
+thirdOrder = {}
 
 NUMBER_OF_LINES = 30
 MAX_NUMBER_OF_WORDS_PER_LINE = 20
@@ -52,10 +52,10 @@ def getRandomValueFromDict(dict, key):
             if len(subDict) > 1:
                 return random.choice(list(set(subDict)))
             else:
-                if dict == transitions:
-                    attempt1 = getRandomValueFromDict(triples, (key[1],key[2]))
+                if dict == thirdOrder:
+                    attempt1 = getRandomValueFromDict(secondOrder, (key[1],key[2]))
                     if attempt1 == end:
-                        attempt2 = getRandomValueFromDict(pairs, key[1])
+                        attempt2 = getRandomValueFromDict(firstOrder, key[1])
                         if attempt2 == end:
                             return random.choice(list(set(subDict)))
                         else:
@@ -63,8 +63,8 @@ def getRandomValueFromDict(dict, key):
                     else:
                         return attempt1
 
-                elif dict == triples:
-                    attempt = getRandomValueFromDict(pairs, key[1])
+                elif dict == secondOrder:
+                    attempt = getRandomValueFromDict(firstOrder, key[1])
                     if attempt == end:
                         return random.choice(list(set(subDict)))
                     else:
@@ -73,22 +73,18 @@ def getRandomValueFromDict(dict, key):
                 else:
                     return random.choice(list(set(subDict)))
         else:
-            # print(key,"NOT FOUND")
             return end
 
 def readFromFile():
     ##read lines from file
     file = open("shakespeare-plays/alllines.txt")
     rows = file.read().splitlines() #split the lines at line boundaries returns a list of lines
-    # lines = []
     return rows
 
 
 def train(rows):
     for i in range(0,len(rows)):
         original = rows[i]
-        # rows[i] = original.replace("\"","") ##delete quotation mark from each line
-        # print (rows[:5]) ##test retrieved data if correct
         tokens = tokenize(original)
         amountOfTokens = len(tokens)
 
@@ -99,31 +95,26 @@ def train(rows):
 
             else:
                 if i == 1:
-                    insertValue(pairs, tokens[i - 1], token)
+                    insertValue(firstOrder, tokens[i - 1], token)
                 elif i == 2:
-                    insertValue(triples, (tokens[i - 2], tokens[i - 1]), token)
+                    insertValue(secondOrder, (tokens[i - 2], tokens[i - 1]), token)
                 else:
-                    insertValue(transitions, (tokens[i - 3], tokens[i - 2], tokens[i - 1]), token)
+                    insertValue(thirdOrder, (tokens[i - 3], tokens[i - 2], tokens[i - 1]), token)
 
                 if i == amountOfTokens - 1 and amountOfTokens > 1:
-                    insertValue(transitions, (tokens[i - 2], tokens[i - 1], token), end)
+                    insertValue(thirdOrder, (tokens[i - 2], tokens[i - 1], token), end)
 
     firstWordsSum = sum(firstWords.values())
     normalize(firstWords, firstWordsSum)
 
-    for word in pairs.keys():
-        pairs[word] = listToDict(pairs, word)
+    for word in firstOrder.keys():
+        firstOrder[word] = listToDict(firstOrder, word)
 
-    for word in triples.keys():
-        triples[word] = listToDict(triples, word)
+    for word in secondOrder.keys():
+        secondOrder[word] = listToDict(secondOrder, word)
 
-    for word in transitions.keys():
-        transitions[word] = listToDict(transitions, word)
-
-    # print(firstWords)
-    # print(pairs)
-    # print(triples)
-    # print(transitions)
+    for word in thirdOrder.keys():
+        thirdOrder[word] = listToDict(thirdOrder, word)
 
 
 def generateLine():
@@ -131,17 +122,17 @@ def generateLine():
     first = getRandomValueFromDict(firstWords,"")
     line.append(first)
 
-    second = getRandomValueFromDict(pairs, first)
+    second = getRandomValueFromDict(firstOrder, first)
     third = end
     if not second == end:
         line.append(second)
-        third = getRandomValueFromDict(triples, (first, second))
+        third = getRandomValueFromDict(secondOrder, (first, second))
         if not third == end:
             line.append(third)
         else:
-            third = getRandomValueFromDict(pairs, second)
+            third = getRandomValueFromDict(firstOrder, second)
             if not third == end:
-                # print("Third worked with pairs!")
+                # print("Third worked with firstOrder!")
                 line.append(third)
             else:
                 third = end
@@ -151,24 +142,22 @@ def generateLine():
     if (not third == end and not second == end):
         next = ""
         while(not next == end and len(line) <= MAX_NUMBER_OF_WORDS_PER_LINE):
-            next = getRandomValueFromDict(transitions,(first, second, third))
+            next = getRandomValueFromDict(thirdOrder,(first, second, third))
             if not next == end:
                 line.append(next)
                 first = second
                 second = third
                 third = next
             else:
-                next = getRandomValueFromDict(triples, (second, third))
+                next = getRandomValueFromDict(secondOrder, (second, third))
                 if not next == end:
-                    # print("Next worked with triples!")
                     line.append(next)
                     first = second
                     second = third
                     third = next
                 else:
-                    next = getRandomValueFromDict(pairs, third)
+                    next = getRandomValueFromDict(firstOrder, third)
                     if not next == end:
-                        # print("Next worked with pairs!")
                         line.append(next)
                         first = second
                         second = third
