@@ -15,4 +15,4 @@ The first word of each line is picked randomly from "initial_words". The second 
 Similarly, to find the nth word (n > 3) in the line, we try the third, second, and finally first Markov Chain to find a next word. If we encounter a single option in the dictionary corresponding to an nth order Markov chain, we also try to look in a dictionary corresponding to the (n-1) th order Markov chain (where n > 1). This reduces the probability of repeating long strings of words that exist in the input file. The line generation algorithm
 continues until we have 20 words in a line or until we reach a dead end in all the Markov chains.
 
-Finally, we print all 20 lines to the command line.
+Finally, we print all 30 lines to the command line.
