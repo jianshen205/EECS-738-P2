@@ -247,7 +247,7 @@ def main():
         line = generateLine()
         play.append(' '.join(line))
 
-    print("They don't call me Shakespeare for nothing:\n")
+    print("Those gents calleth not me shakespeare f'r nothing:\n")
     for line in play:
         print('\t',line,'\n')
 
