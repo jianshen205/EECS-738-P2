@@ -63,6 +63,9 @@ To solve both of these problems we use the second and first order Markov chains.
     In this case, we have no option but to end the line. Note that having only the option to go to 'tokEND' is interpreted as reaching a dead end.
 
 
-Each line ends when either we have reached a dead end or we have reached the words per line limit (15).
+Each line ends when either we have reached a dead end in all three Markov chains or we have reached the words per line limit (15).
 
 Lastly, we print all 30 lines to the command line.
+
+Refereneces:
+    https://medium.com/ymedialabs-innovation/next-word-prediction-using-markov-model-570fc0475f96
