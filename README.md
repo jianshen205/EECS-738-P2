@@ -52,7 +52,7 @@ To solve both of these problems we use the second and first order Markov chains.
 
     In this example, since the last 3 words (third order) lead to a dead end, we try just the last two words (second order). Since the last 2 words lead to a dead end as well, we try the last word (first order).
 
-    If this fails, we give up and end the line. For example:
+    If this fails, we give up and end the line. For example:\
 
       ('they', 'were', 'glassd') -> ['tokEND']\
       ('were', 'glassd') -> ['tokEND']\
