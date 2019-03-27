@@ -7,13 +7,18 @@ import numpy as np
 import random
 import string
 
+#First three words:
 firstWords = {}
+secondWords = {}
+thirdWords = {}
+
+#Transition Markov Chains:
 firstOrder = {}
 secondOrder = {}
 thirdOrder = {}
 
 NUMBER_OF_LINES = 30
-MAX_NUMBER_OF_WORDS_PER_LINE = 20
+MAX_NUMBER_OF_WORDS_PER_LINE = 15
 end = "tokEND"
 
 def tokenize(row):
@@ -67,9 +72,13 @@ def train(rows):
 
             else:
                 if i == 1:
+                    #Inserting into dictionary of second words.
+                    insertValue(secondWords, tokens[i - 1], token)
                     #Inserting into first order Markov chain.
                     insertValue(firstOrder, tokens[i - 1], token)
                 elif i == 2:
+                    #Inserting into dictionary of third words.
+                    insertValue(thirdWords, (tokens[i - 2], tokens[i - 1]), token)
                     #Inserting into first order Markov chain.
                     insertValue(firstOrder, tokens[i - 1], token)
                     #Inserting into second order Markov chain.
@@ -93,6 +102,14 @@ def train(rows):
     #We normalize the dictionary of first words.
     firstWordsSum = sum(firstWords.values())
     normalize(firstWords, firstWordsSum)
+
+    #We normalize the dictionary of second words.
+    for word in secondWords.keys():
+        secondWords[word] = listToDict(secondWords, word)
+
+    #We normalize the dictionary of third words.
+    for word in thirdWords.keys():
+        thirdWords[word] = listToDict(thirdWords, word)
 
     #We normalize the dict corresponding to the first order Markov chain.
     for word in firstOrder.keys():
@@ -168,8 +185,25 @@ def getRandomValueFromDict(dict, key):
                         # from that attempt.
                         return attempt
 
+                #If our original dictionary was "thirdWords", we try
+                # "secondWords".
+                elif dict == thirdWords:
+                    #We try to use the lsat word instead of the last two words
+                    # to see if we can obtain more than one option.
+                    attempt = getRandomValueFromDict(secondWords, key[1])
+                    if attempt == end:
+                        #If the attempt was unsuccessful, we return the only
+                        # option obtained from "thirdWords".
+                        return random.choice(list(set(subDict)))
+                    else:
+                        #If the attempt succeeded, we return what we obtained
+                        # from that attempt.
+                        return attempt
+
+
                 else:
                     return random.choice(list(set(subDict)))
+
         #If we can't find the value in the dictionary, we return the end token.
         else:
             return end
@@ -184,19 +218,19 @@ def generateLine():
     line.append(first)
 
     #We attempt to predict the second word based on the first word.
-    second = getRandomValueFromDict(firstOrder, first)
+    second = getRandomValueFromDict(secondWords, first)
     third = end
 
     if not second == end:
         line.append(second)
         #We attempt to predict the third word based on the first two words.
-        third = getRandomValueFromDict(secondOrder, (first, second))
+        third = getRandomValueFromDict(thirdWords, (first, second))
         if not third == end:
             line.append(third)
         else:
             #If the first attempt was unsuccessful, we attempt to predict the
             # third word based only on the second word.
-            third = getRandomValueFromDict(firstOrder, second)
+            third = getRandomValueFromDict(secondWords, second)
             if not third == end:
                 line.append(third)
             else:
@@ -242,14 +276,16 @@ def main():
     data = readFromFile()
     train(data)
     play = []
-    print("Alloweth me to gen'rate a playeth f'r thee, mine own lief sir or mistress...")
+    print("Alloweth me to gen'rate a playeth f'r thee, mine own lief sir 'r mistress...")
     for i in range(0, NUMBER_OF_LINES):
         line = generateLine()
         play.append(' '.join(line))
 
     print("Those gents calleth not me shakespeare f'r nothing:\n")
+    i = 1
     for line in play:
-        print('\t',line,'\n')
+        print('\t',i, ": ", line,'\n')
+        i += 1
 
 if __name__== "__main__":
   main()

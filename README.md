@@ -13,6 +13,6 @@ After training the model, new text generation starts. We generate a fixed number
 The first word of each line is picked randomly from "initial_words". The second word uses the first order Markov chain. The third word uses the second order Markov chain. If we cannot find a next third word with the second order Markov chain or if we only have one option (more on this below), the program tries to use the first order Markov chain.
 
 Similarly, to find the nth word (n > 3) in the line, we try the third, second, and finally first Markov Chain to find a next word. If we encounter a single option in the dictionary corresponding to an nth order Markov chain, we also try to look in a dictionary corresponding to the (n-1) th order Markov chain (where n > 1). This reduces the probability of repeating long strings of words that exist in the input file. The line generation algorithm
-continues until we have 20 words in a line or until we reach a dead end in all the Markov chains.
+continues until we have 15 words in a line or until we reach a dead end in all the Markov chains.
 
 Finally, we print all 30 lines to the command line.
