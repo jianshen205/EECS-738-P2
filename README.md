@@ -28,21 +28,21 @@ To solve both of these problems we use the second and first order Markov chains.
 
 1) When we only find one possible next word based on the previous 3 words. For example:
 
-  To solve this issue, we recursively try lower order Markov chains until we find one in which there is more than one option. For example:
+    To solve this issue, we recursively try lower order Markov chains until we find one in which there is more than one option. For example:
 
-    ('cowards', 'die', 'many') -> ['times']\
-    ('die', 'many') -> ['times']\
-    'many' -> ['pipes', 'smiling', 'years', 'ages', 'times', ...]
+      ('cowards', 'die', 'many') -> ['times']\
+      ('die', 'many') -> ['times']\
+      'many' -> ['pipes', 'smiling', 'years', 'ages', 'times', ...]
 
-  In this example, since the last 3 words (third order) lead to only one option, we try just the last two words (second order). Since the last 2 words lead to only one option as well, we try the last word (first order).
+    In this example, since the last 3 words (third order) lead to only one option, we try just the last two words (second order). Since the last 2 words lead to only one option as well, we try the last word (first order).
 
-  It is important to note that if we do not find a better option, we will return the only possible next word. For example:
+    It is important to note that if we do not find a better option, we will return the only possible next word. For example:
 
-    ('conquests', 'glories', 'triumphs') -> ['spoils']\
-    ('glories', 'triumphs') -> ['spoils']\
-    'triumphs' -> ['spoils']
+      ('conquests', 'glories', 'triumphs') -> ['spoils']\
+      ('glories', 'triumphs') -> ['spoils']\
+      'triumphs' -> ['spoils']
 
-  In this case, since we have failed to find a better option, our next word would be 'spoils'.
+    In this case, since we have failed to find a better option, our next word would be 'spoils'.
 
 2) When we do not find any next word based on the previous 3 words. For example:
 
