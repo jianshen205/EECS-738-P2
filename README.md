@@ -12,7 +12,7 @@ After training the model, new text generation starts. We generate a fixed number
 
 In this way, the number of lines that end abruptly in one or two words are reduced. Most lines are guaranteed to contain at least three words.
 
-Starting from the fourth word in each line, words are predicted using the Markov chains. Initially, we attempt to predict the next word in a line based on the three previous words using the "thirdOrder" dictionary. For example:
+Starting from the fourth word in each line, words are predicted using the Markov chains. Initially, we attempt to predict the next word in a line based on the three previous words using the "thirdOrder" dictionary. For example:\
 
   ('all', 'the', 'worlds') -> ['a', 'new', 'vastidity', 'my']\
   ('wherefore', 'art', 'thou') -> ['romeo']\
@@ -28,14 +28,16 @@ To solve both of these problems we use the second and first order Markov chains.
 
 1) When we only find one possible next word based on the previous 3 words. For example:
 
-  To solve this issue, we recursively try lower order Markov chains until we find one in which there is more than one option. For example:
+  To solve this issue, we recursively try lower order Markov chains until we find one in which there is more than one option. For example:\
+
     ('cowards', 'die', 'many') -> ['times']\
     ('die', 'many') -> ['times']\
     'many' -> ['pipes', 'smiling', 'years', 'ages', 'times', ...]
 
   In this example, since the last 3 words (third order) lead to only one option, we try just the last two words (second order). Since the last 2 words lead to only one option as well, we try the last word (first order).
 
-  It is important to note that if we do not find a better option, we will return the only possible next word. For example:
+  It is important to note that if we do not find a better option, we will return the only possible next word. For example:\
+
     ('conquests', 'glories', 'triumphs') -> ['spoils']\
     ('glories', 'triumphs') -> ['spoils']\
     'triumphs' -> ['spoils']
@@ -44,7 +46,7 @@ To solve both of these problems we use the second and first order Markov chains.
 
 2) When we do not find any next word based on the previous 3 words. For example:
 
-    To solve this issue, we attempt to find a next word based on only the previous 2 words. If this fails, we attempt to find a next word based on the previous word only. For example:
+    To solve this issue, we attempt to find a next word based on only the previous 2 words. If this fails, we attempt to find a next word based on the previous word only. For example:\
 
       ('Thou', 'shalt', 'woo') -> []\
       ('shalt', 'woo') -> []\
