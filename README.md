@@ -48,17 +48,17 @@ To solve both of these problems we use the second and first order Markov chains.
 
     To solve this issue, we attempt to find a next word based on only the previous 2 words. If this fails, we attempt to find a next word based on the previous word only. For example:
 
-      ('Thou', 'shalt', 'woo') -> []\
-      ('shalt', 'woo') -> []\
-      'woo' -> ['her', 'thee']
+        ('Thou', 'shalt', 'woo') -> []\
+        ('shalt', 'woo') -> []\
+        'woo' -> ['her', 'thee']
 
     In this example, since the last 3 words (third order) lead to a dead end, we try just the last two words (second order). Since the last 2 words lead to a dead end as well, we try the last word (first order).
 
     If this fails, we give up and end the line. For example:
 
-      ('they', 'were', 'glassd') -> ['tokEND']\
-      ('were', 'glassd') -> ['tokEND']\
-      'glassd' -> ['tokEND']
+        ('they', 'were', 'glassd') -> ['tokEND']\
+        ('were', 'glassd') -> ['tokEND']\
+        'glassd' -> ['tokEND']
 
     In this case, we have no option but to end the line. Note that having only the option to go to 'tokEND' is interpreted as reaching a dead end.
 
